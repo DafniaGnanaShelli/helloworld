@@ -102,3 +102,35 @@ object AbstractAndTraitDemo {
   }
 }
 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: exp-node-deploy
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: exp-node
+  template:
+    metadata:
+      labels:
+        app: exp-node
+    spec:
+      containers:
+        - name: exp-node
+          image: exp:1.0    # your Docker image
+          ports:
+            - containerPort: 3030
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: exp-node-service
+spec:
+  selector:
+    app: exp-node
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 8080         # external port
+      targetPort: 3030   # container port
